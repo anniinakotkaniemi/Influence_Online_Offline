@@ -7,11 +7,11 @@ library(gridExtra)
 library(Rglpk)
 library(ggplot2)
 
-load("~/output/v9/m0.RData")
-load("~/output/v9/m1.RData")
-load("~/output/v9/m2.RData")
-load("~/output/v9/m3.RData")
-load("~/output/v9/m4.RData")
+#load("~/output/v9/m0.RData")
+#load("~/output/v9/m1.RData")
+#load("~/output/v9/m2.RData")
+#load("~/output/v9/m3.RData")
+#load("~/output/v9/m4.RData")
 
 ## Extract coefficients
 makeCoVector <- function(model_list, coef_name){
@@ -26,26 +26,10 @@ makeCoVector <- function(model_list, coef_name){
   coef <- as.numeric(paste0(coef_list))
   coef
 }
-# Coefficients for model 0
-m0_co1 <- makeCoVector(m0, "edges")
-m0_co2 <- makeCoVector(m0, "nodeicov.inf")
-m0_co3 <- makeCoVector(m0, "nodeicov.pol")
-m0_co4 <- makeCoVector(m0, "nodematch.OT_BIG.1")
-m0_co5 <- makeCoVector(m0, "nodematch.OT_BIG.2")
-m0_co6 <- makeCoVector(m0, "nodematch.OT_BIG.3")
-m0_co7 <- makeCoVector(m0, "nodematch.OT_BIG.4")
-m0_co8 <- makeCoVector(m0, "edgecov.nw_past")
+
 # Coefficients for m1
-m1_co1 <- makeCoVector(m1, "edges")
 m1_co2 <- makeCoVector(m1, "nodeicov.inf")
 m1_co3 <- makeCoVector(m1, "nodeicov.pol")
-m1_co4 <- makeCoVector(m1, "nodematch.OT_BIG.1")
-m1_co5 <- makeCoVector(m1, "nodematch.OT_BIG.2")
-m1_co6 <- makeCoVector(m1, "nodematch.OT_BIG.3")
-m1_co7 <- makeCoVector(m1, "nodematch.OT_BIG.4")
-m1_co8 <- makeCoVector(m1, "edgecov.nw_past")
-m1_co9 <- makeCoVector(m1, "mutual")
-m1_co10 <- makeCoVector(m1, "gwesp.fixed.0")
 m1_co11 <- makeCoVector(m1, "gwideg.fixed.0")
 m1_co12 <- makeCoVector(m1, "nodeicov.all_deg")
 # Coefficients for model 2
@@ -72,10 +56,6 @@ pvA_m1 <- makePvAnova(m0, m1) # change m0 -> m1
 pvA_m2 <- makePvAnova(m1, m2) # change m1 -> m2
 pvA_m3 <- makePvAnova(m1, m3) # change m1 -> m3
 
-anova(m0[[1]], m1[[1]])
-summary(m0[[1]])
-summary(m1[[1]])
-
 # List p-values for the coefficients
 makePvCo <- function(model_list, coef_name){
   pv_list <- list()
@@ -91,31 +71,14 @@ makePvCo <- function(model_list, coef_name){
   pv[is.na(pv)] <- 3
   pv
 }
-# For all coefficients in m0
-m0_pco1 <- makePvCo(m0, "edges")
-m0_pco2 <- makePvCo(m0, "nodeicov.inf")
-m0_pco3 <- makePvCo(m0, "nodeicov.pol")
-m0_pco4 <- makePvCo(m0, "nodematch.OT_BIG.1")
-m0_pco5 <- makePvCo(m0, "nodematch.OT_BIG.2")
-m0_pco6 <- makePvCo(m0, "nodematch.OT_BIG.3")
-m0_pco7 <- makePvCo(m0, "nodematch.OT_BIG.4")
-m0_pco8 <- makePvCo(m0, "edgecov.nw_past")
-# For all coefficients in m1
-m1_pco1 <- makePvCo(m1, "edges")
+# P-values for m1
 m1_pco2 <- makePvCo(m1, "nodeicov.inf")
 m1_pco3 <- makePvCo(m1, "nodeicov.pol")
-m1_pco4 <- makePvCo(m1, "nodematch.OT_BIG.1")
-m1_pco5 <- makePvCo(m1, "nodematch.OT_BIG.2")
-m1_pco6 <- makePvCo(m1, "nodematch.OT_BIG.3")
-m1_pco7 <- makePvCo(m1, "nodematch.OT_BIG.4")
-m1_pco8 <- makePvCo(m1, "edgecov.nw_past")
-m1_pco9 <- makePvCo(m1, "mutual")
-m1_pco10 <- makePvCo(m1, "gwesp.fixed.0")
 m1_pco11 <- makePvCo(m1, "gwideg.fixed.0")
 m1_pco12 <- makePvCo(m1, "nodeicov.all_deg")
-# P-values for m3
+# P-values for m2
 m2_pco13 <- makePvCo(m2, "nodeicov.inf_deg")
-# P-values for m4
+# P-values for m3
 m3_pco14 <- makePvCo(m3, "nodeicov.pol_deg")
 
 # Black and white plot function
