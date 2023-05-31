@@ -6,7 +6,6 @@ library(dplyr)
 library(devtools)
 library(lubridate)
 
-
 # Upload the networks
 load("~/output/nwlist.RData")
 
@@ -29,10 +28,10 @@ names(m0) <- c(2:48)
 save(m0, file="output/final/m0.RData") 
 
 ## ---------------- M1  ---------------- ##
-m1.all <- list()
+m1 <- list()
 for(nw_i in 2:48){
-  nw <- nwlist.all[[nw_i]]
-  nw_past <- nwlist.all[[nw_i-1]]
+  nw <- nwlist[[nw_i]]
+  nw_past <- nwlist[[nw_i-1]]
   m <- ergm(nw ~ edges 
             + nodeicov('inf')
             + nodeicov('pol') 
@@ -43,13 +42,12 @@ for(nw_i in 2:48){
             + gwidegree(decay=0, fixed=T)
             + nodeicov('all_deg')
             ,control = control.ergm(seed = 160222, MCMC.samplesize = 10000))
-  m1.all[[(nw_i)]] <- m
+  m1[[(nw_i)]] <- m
 }
-m1.all <- m1.all[c(2:48)]
-names(m1.all) <- c(2:48)
-save(m1.all, file="output/final/m1.all.RData")
-?paste
-summary(m1_upped[[16]])
+m1 <- m1[c(2:48)]
+names(m1) <- c(2:48)
+save(m1, file="output/final/m1.RData")
+
 
 ## ---------------- M2 ---------------- ##
 m2 <- list()
