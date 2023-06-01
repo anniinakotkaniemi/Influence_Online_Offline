@@ -14,8 +14,9 @@ assess_gof <- function(models, networks, nsim = 5000, seed = 70492, verbose = T)
 }
 
 # Simple plotting function for GOF
-plot_gofits <- function(gofits){
+plot_gofits <- function(gofits, labels = NULL){
   vars <- names(gofits[[1]][[2]])
+  labs <- if(is.null(labels)){vars} else {labels}
   nsim <- nrow(gofits[[1]][[1]])
   for(i in vars){
     fitstats <- matrix(unlist(lapply(gofits, function(x){
@@ -24,7 +25,7 @@ plot_gofits <- function(gofits){
       } else {rep(NA, nsim + 1)}
     })), ncol = length(gofits))
     par(mar = c(4, 4, 4, 4)) 
-    boxplot(fitstats[-1,], range = 0)
+    boxplot(fitstats[-1,], range = 0, main = labs[which(vars == i)])
     points(fitstats[1,], col = 2, pch = 19, cex = 0.5)
     lines(fitstats[1,], col = 2)
   }
