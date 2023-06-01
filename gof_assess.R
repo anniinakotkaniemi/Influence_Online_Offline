@@ -57,9 +57,16 @@ assess_ideg <- function(models, networks, nsim, seed= 310523){
   gof_ideg
 }
 m1_ideg <- assess_ideg(m1, nwlist, 100)
-# Test to omit the model statistic term with one network
+# Test to exclude the model statistic with one network
 nw_past <- nwlist[[1]]
 goftest <- gof(m1[[1]], GOF = m1~idegree- model)
 plot(goftest)  
 ?gof
+
+# Plot (gives both idegree and model statistic for all periods in m1)
+ideg_plot <- list() 
+for (i in 1:length(m1_ideg)) {
+  ideg_plot <- plot(m1_ideg[[i]], main = paste("Period", i))
+}
+ideg_plot
 
