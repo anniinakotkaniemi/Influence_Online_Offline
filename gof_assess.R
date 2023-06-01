@@ -43,4 +43,23 @@ par(mfrow = c(4, 3))
 plot_gofits(gofits)
 dev.off()
 
+# Function for M1 indegree gof statistics 
+# Function for extracting idegree-gof
+assess_ideg <- function(models, networks, nsim, seed= 310523){
+  gof_ideg <- list()
+  for (i in 1:length(models)){
+    nw <<- networks[[i+1]]
+    nw_past <<- networks[[i]]
+    gof_ideg[[i]] <- gof(models[[i]], GOF = models~idegree-model
+                              ,control= control.gof.ergm(nsim = nsim, seed = seed))
+    rm(nw, nw_past, pos = ".GlobalEnv")
+  }
+  gof_ideg
+}
+m1_ideg <- assess_ideg(m1, nwlist, 100)
+# Test to omit the model statistic term with one network
+nw_past <- nwlist[[1]]
+goftest <- gof(m1[[1]], GOF = m1~idegree- model)
+plot(goftest)  
+?gof
 
