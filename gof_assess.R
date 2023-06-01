@@ -14,7 +14,7 @@ assess_gof <- function(models, networks, nsim = 5000, seed = 70492, verbose = T)
 }
 
 # Simple plotting function for GOF
-plot_gofits <- function(gofits, labels = NULL){
+plot_gofits <- function(gofits, labels = plotlabels){ # if labels = NULL, labels will be the default term name
   vars <- names(gofits[[1]][[2]])
   labs <- if(is.null(labels)){vars} else {labels}
   nsim <- nrow(gofits[[1]][[1]])
@@ -30,7 +30,9 @@ plot_gofits <- function(gofits, labels = NULL){
     lines(fitstats[1,], col = 2)
   }
 }
-
+plotlabels <- c("Edges", "Reputational influence", "Government influence", 
+                "Homophily: Governmental", "Homophily: Scientific", "Homophily: Business", "Homophily: Civil society",
+                "Past edge", "Reciprocity", "GWESP", "GWI Degree", "Popularity effect")
 gofits <- assess_gof(m1, nwlist, nsim = 10000)
 plot_gofits(gofits)
 
