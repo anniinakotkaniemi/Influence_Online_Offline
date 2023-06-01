@@ -1,6 +1,6 @@
 # Influence score & Twitter ranking figure
 
-# Highest indegrees in the data by organization
+# Highest indegrees in the Twitter data by organization
 twitter.in <- table(nt.climate$org_R2_receiver)
 twitter.in <- data.frame(twitter.in)
 twitter.in <- twitter.in[order(twitter.in$Freq, decreasing=T),]
