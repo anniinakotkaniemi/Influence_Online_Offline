@@ -24,7 +24,7 @@ plot_gofits <- function(gofits, labels = plotlabels){ # if labels = NULL, labels
         c(x[[2]][i], x[[1]][,i])
       } else {rep(NA, nsim + 1)}
     })), ncol = length(gofits))
-    par(mar = c(4, 4, 4, 4)) 
+    par(mar = c(2, 2, 1.5, 0.5)) 
     boxplot(fitstats[-1,], range = 0, main = labs[which(vars == i)])
     points(fitstats[1,], col = 2, pch = 19, cex = 0.5)
     lines(fitstats[1,], col = 2)
@@ -35,5 +35,12 @@ plotlabels <- c("Edges", "Reputational influence", "Government influence",
                 "Past edge", "Reciprocity", "GWESP", "GWI Degree", "Popularity effect")
 gofits <- assess_gof(m1, nwlist, nsim = 10000)
 plot_gofits(gofits)
+
+# Print degeneracy statistics
+pdf("output/pdf/gof_plots.pdf", width = 8, height = 11)
+#jpeg("output/jpeg/gof_plots.jpg", width = 8, height = 11, res = 300)
+par(mfrow = c(4, 3))
+plot_gofits(gofits)
+dev.off()
 
 
