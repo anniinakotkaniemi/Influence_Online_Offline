@@ -28,23 +28,69 @@ org_en <- rev(org_en)
 ot.col  <- c("#4477AA","#CCBB44", "#AA3377", "#228833")
 ot.col <- ot.col[as.numeric(inf25.tw$OT_BIG)]
 
-# Make figure
+# Make figure pdf
+pdf("output/pdf/ranking_figure.pdf", width = 9, height = 6)
 plot.new()
-par(mar = c(2, 20, 1, 8), xpd=TRUE) 
+par(mar = c(2, 20, 2, 8), xpd=TRUE) 
 plot.window(xlim = c(0, 1), ylim = c(25, 1))
-axis(1, at = c(0,1), labels = c("Reputational Influence", "Retweet Ranking"), line = NA, lty=0)
+axis(1, at = c(0,1), labels = c("Reputational Influence", "Retweet Ranking"), line = NA, lty=0,padj = -1.5, font = 2)
 axis(2, at = 25:1, labels = org_en, las = 2, lwd=0)
 points(x = rep(0,25), y = mat[, 3], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
 points(x = rep(1,25), y = mat[, 4], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
 segments(x0 = 0, x1 = 1, y0 = mat[,3], y1 = mat[,4], lty = 1, adjustcolor(col = ot.col, alpha.f = 0.5), lwd = 1.5)
-legend('topright', inset=c(-0.55,0), legend = c('Government', 'Science', 'Business', 'Civil Society'), 
+legend('topright', inset=c(-0.45,0), legend = c('Government', 'Science', 'Business', 'Civil Society'), 
         col= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
        border= F,
        pch= c(21, 21, 21, 21),
        pt.bg= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
-       bg='white',
+       bg='white', pt.cex = 1.5, title.font = 2,
        bty = 'n', cex = 1, title = "Organisation Type")
-mtext("Top 25 Most Reputationally Influential Organisations", 
+mtext("Top 25 Most Reputationally Influential Organisations", las=2,
       side = 2, line = -2, at = -0.5, adj = 1.05, col = "black", font = 2)
 #box()
+dev.off()
 
+#Jpg
+jpeg("output/jpeg/ranking_figure.jpg",width = 2600, height = 1700, res = 300)
+plot.new()
+par(mar = c(2, 23, 2, 9), xpd=T) 
+plot.window(xlim = c(0, 1), ylim = c(25, 1))
+axis(1, at = c(0,1), labels = c("Reputational Influence", "Retweet Ranking"), line = NA, lty=0,padj = -1.5, font = 2)
+axis(2, at = 25:1, labels = org_en, las = 2, lwd=0)
+points(x = rep(0,25), y = mat[, 3], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
+points(x = rep(1,25), y = mat[, 4], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
+segments(x0 = 0, x1 = 1, y0 = mat[,3], y1 = mat[,4], lty = 1, adjustcolor(col = ot.col, alpha.f = 0.5), lwd = 1.5)
+legend('topright', inset=c(-0.7,0), legend = c('Government', 'Science', 'Business', 'Civil Society'), 
+       col= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
+       border= F,
+       pch= 21,
+       pt.bg= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
+       bg='white', pt.cex = 1.5, title.font = 2,
+       bty = 'n', cex = 1, title = "Organisation Type")
+mtext("Top 25 Most Reputationally Influential Organisations", las=2,
+      side = 2, line = 2, at = -0.5, adj = 0.9, col = "black", font = 2)
+#box()
+dev.off()
+
+
+#Jpg
+pdf("output/pdf/ranking_figure.jpgdim.pdf",width = 9, height = 6)
+plot.new()
+par(mar = c(2, 23, 2, 9), xpd=T) 
+plot.window(xlim = c(0, 1), ylim = c(25, 1))
+axis(1, at = c(0,1), labels = c("Reputational Influence", "Retweet Ranking"), line = NA, lty=0,padj = -1.5, font = 2)
+axis(2, at = 25:1, labels = org_en, las = 2, lwd=0)
+points(x = rep(0,25), y = mat[, 3], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
+points(x = rep(1,25), y = mat[, 4], pch = 21, col = ot.col, bg = ot.col, cex=1.8)
+segments(x0 = 0, x1 = 1, y0 = mat[,3], y1 = mat[,4], lty = 1, adjustcolor(col = ot.col, alpha.f = 0.5), lwd = 1.5)
+legend('topright', inset=c(-0.6,0), legend = c('Government', 'Science', 'Business', 'Civil Society'), 
+       col= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
+       border= F,
+       pch= 21,
+       pt.bg= c("#4477AA","#CCBB44", "#AA3377", "#228833"),
+       bg='white', pt.cex = 1.5, title.font = 2,
+       bty = 'n', cex = 1, title = "Organisation Type")
+mtext("Top 25 Most Reputationally Influential Organisations", las=2,
+      side = 2, line = 2, at = -0.5, adj = 0.9, col = "black", font = 2)
+#box()
+dev.off()
