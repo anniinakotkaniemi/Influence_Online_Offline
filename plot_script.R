@@ -1,20 +1,18 @@
 
 ################################################
-## ---------- Plot the coefficients --------- ##
+## ---------- Plot the ERGM results --------- ##
 ################################################
 
 library(gridExtra)
 library(Rglpk)
 library(ggplot2)
-
-#load("~/output/v9/m0.RData")
-#load("~/output/v9/m1.RData")
-#load("~/output/v9/m2.RData")
-#load("~/output/v9/m3.RData")
-#load("~/output/v9/m4.RData")
+load("~/output/final/m0.RData")
+load("~/output/final/m1.RData")
+load("~/output/final/m2.RData")
+load("~/output/final/m3.RData")
 
 ## Extract coefficients
-makeCoVector <- function(model_list, coef_name){
+makeCo <- function(model_list, coef_name){
   # Coefficients
   coef_list <- list()
   for(model_i in c(1:length(model_list))){
@@ -26,37 +24,7 @@ makeCoVector <- function(model_list, coef_name){
   coef <- as.numeric(paste0(coef_list))
   coef
 }
-
-# Coefficients for m1
-m1_co2 <- makeCoVector(m1, "nodeicov.inf")
-m1_co3 <- makeCoVector(m1, "nodeicov.pol")
-m1_co11 <- makeCoVector(m1, "gwideg.fixed.0")
-m1_co12 <- makeCoVector(m1, "nodeicov.all_deg")
-# Coefficients for model 2
-m2_co13 <- makeCoVector(m2, "nodeicov.inf_deg")
-# Indegree terms for model 3
-m3_co14 <- makeCoVector(m3, "nodeicov.pol_deg")
-
-# P-values for anova-test
-makePvAnova <- function(model_list_1, model_list_2){
-  pvalue_list <- list()
-  for(m_i in c(1:length(model_list_1))){
-    anova_list <- Map(anova, model_list_1, model_list_2) 
-    pvalue <- anova_list[[m_i]]$`Pr(>|Chisq|)`[3]
-    pvalue_list[[(m_i)]] <- pvalue
-    pvalue <- as.numeric(paste0(pvalue_list))
-    options(scipen=999)
-    pvalue[pvalue>0.05] <- 2
-    pvalue[pvalue< 0.05 ] <- 1
-  }
-  pvalue
-}
-## List p-values ANOVA
-pvA_m1 <- makePvAnova(m0, m1) # change m0 -> m1
-pvA_m2 <- makePvAnova(m1, m2) # change m1 -> m2
-pvA_m3 <- makePvAnova(m1, m3) # change m1 -> m3
-
-# List p-values for the coefficients
+# Extract p-values for the coefficients
 makePvCo <- function(model_list, coef_name){
   pv_list <- list()
   for(model_i in c(1:length(model_list))){
@@ -71,42 +39,72 @@ makePvCo <- function(model_list, coef_name){
   pv[is.na(pv)] <- 3
   pv
 }
-# P-values for m1
-m1_pco2 <- makePvCo(m1, "nodeicov.inf")
-m1_pco3 <- makePvCo(m1, "nodeicov.pol")
-m1_pco11 <- makePvCo(m1, "gwideg.fixed.0")
-m1_pco12 <- makePvCo(m1, "nodeicov.all_deg")
-# P-values for m2
-m2_pco13 <- makePvCo(m2, "nodeicov.inf_deg")
-# P-values for m3
-m3_pco14 <- makePvCo(m3, "nodeicov.pol_deg")
+# P-values for deviance test
+makePvAnova <- function(model_list_1, model_list_2){
+  pvalue_list <- list()
+  for(m_i in c(1:length(model_list_1))){
+    anova_list <- Map(anova, model_list_1, model_list_2) 
+    pvalue <- anova_list[[m_i]]$`Pr(>|Chisq|)`[3]
+    pvalue_list[[(m_i)]] <- pvalue
+    pvalue <- as.numeric(paste0(pvalue_list))
+    options(scipen=999)
+    pvalue[pvalue>0.05] <- 2
+    pvalue[pvalue< 0.05 ] <- 1
+  }
+  pvalue
+}
+
+# Coefficients for m1
+co1 <- makeCo(m1, "nodeicov.inf")
+co2 <- makeCo(m1, "nodeicov.pol")
+co3 <- makeCo(m1, "gwideg.fixed.0")
+co4 <- makeCo(m1, "nodeicov.all_deg")
+# Coefficients for model 2
+co5 <- makeCo(m2, "nodeicov.inf_deg")
+# Coefficients for model 3
+co6 <- makeCo(m3, "nodeicov.pol_deg")
+# Coefficient P-values for m1
+cop1 <- makePvCo(m1, "nodeicov.inf")
+cop2 <- makePvCo(m1, "nodeicov.pol")
+cop3 <- makePvCo(m1, "gwideg.fixed.0")
+cop4 <- makePvCo(m1, "nodeicov.all_deg")
+# Coefficient P-values for m2
+cop5 <- makePvCo(m2, "nodeicov.inf_deg")
+# Coefficient P-values for m3
+cop6 <- makePvCo(m3, "nodeicov.pol_deg")
+## List p-values ANOVA
+p_m1 <- makePvAnova(m0, m1) # change m0 -> m1
+p_m2 <- makePvAnova(m1, m2) # change m1 -> m2
+p_m3 <- makePvAnova(m1, m3) # change m1 -> m3
+
 
 ###### Plotting ##### 
+# Fix labels
+labelsm <- c("Jan 18", "Jul 18",
+             "Jan 19", "Jul 19",
+             "Jan 20", "Jul 20",
+             "Jan 21", "Jul 21")
 # Function to plot coefficients and p-values without ANOVA test
 plotCoPv_m1 <- function(coefficient, pv_plot, coefname_modelnr){
   df <- data.frame(c(2:48), coefficient, pv_plot)
   colnames(df) <- c("Month", "Coefficient", "Pvalue")
-  plot_plot_name <- ggplot(df, aes(x=Month, y=Coefficient, group=1)) + ggtitle(coefname_modelnr)+
+  px <- ggplot(df, aes(x=Month, y=Coefficient, group=1)) + ggtitle(coefname_modelnr)+
     geom_line()+
     theme_bw() +
-    geom_hline(yintercept = 0, color = 'black', size = 1)+
+    scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
+    geom_hline(yintercept = 0, color = 'black', linewidth = 1)+
     geom_point(aes(fill=factor(pv_plot), color=factor(pv_plot), shape=factor(pv_plot), size=4),size=4)+ 
     scale_fill_manual(values=c('1'='#0072B2', '2'='#F05039'))+
     scale_color_manual(values=c('1'='black', '2'='black'))+
     scale_shape_manual(values=c('1' = 21, '2'=4))+
     theme(legend.position = "none",
-          plot.title=element_text(size=20
-                                  #   ,family="Times New Roman"
-          ),
+          plot.title=element_text(size=20),
           axis.title.x=element_text(vjust=0,  
-                                    size=18, 
-          ),  
+                                    size=18),  
           axis.title.y=element_text(size=18),
           axis.text.y=element_text(size=14),
-          axis.text.x=element_text(size=14, colour = 'black'
-                                   #,angle = 30,vjust=.5
-          ))
-  plot_plot_name
+          axis.text.x=element_text(size=14, colour = 'black'))
+  px
 }
 
 # Function to plot coefficients and p-values with ANOVA test
@@ -120,85 +118,69 @@ plotCoPv <- function(coefficient, pvalue_anova, pvalue_co, coefname_modelnr){
   pv_plot <-pv_df$pv
   df <- data.frame(c(2:48), coefficient, pv_plot)
   colnames(df) <- c("Month", "Coefficient", "Pvalue")
-  plot_plot_name <- ggplot(df, aes(x=Month, y=Coefficient, group=1)) + ggtitle(coefname_modelnr)+
+  px <- ggplot(df, aes(x=Month, y=Coefficient, group=1)) + ggtitle(coefname_modelnr)+
     geom_line()+
     theme_bw() +
-    geom_hline(yintercept = 0, color = 'black', size = 1)+
+    scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
+    geom_hline(yintercept = 0, color = 'black', linewidth = 1)+
     geom_point(aes(fill=factor(pv_plot), color=factor(pv_plot), shape=factor(pv_plot), size=4),size=4)+ 
     scale_fill_manual(values=c('1'='#0072B2', '2'='#0072B2', '3'='#F05039', '4'='#F05039'))+
     scale_color_manual(values=c('1'='black', '2'='black', '3'='black', '4'='black'))+
     scale_shape_manual(values=c('1' = 21, '2'=24, '3'=4, '4'=4)  )+
     theme(legend.position = "none",
-          plot.title=element_text(size=20
-                                  #   ,family="Times New Roman"
-          ),
+          plot.title=element_text(size=20),
           axis.title.x=element_text(vjust=0,  
-                                    size=18
-                                    #,family="Times New Roman"
-          ),  
-          axis.title.y=element_text(size=18
-                                    #,family="Times New Roman"
-          ),
-          axis.text.y=element_text(size=14, colour = 'black'
-                                   # ,family="Times New Roman"
-          ),
-          axis.text.x=element_text(size=14, colour = 'black'
-                                   #    ,family="Times New Roman"
-                                   #,angle = 30,vjust=.5
-          ))
-  plot_plot_name
+                                    size=18),  
+          axis.title.y=element_text(size=18),
+          axis.text.y=element_text(size=14, colour = 'black'),
+          axis.text.x=element_text(size=14, colour = 'black'))
+  px
 }
 
-# M0
-m0_p2 <- plotCoPv_m1(m0_co2, m0_pco2, "Reputational Influence")
-m0_p3 <- plotCoPv_m1(m0_co3, m0_pco3, "Government Influence")
-# M1 without indicating the anova test
-m1_p2 <- plotCoPv_m1(m1_co2, m1_pco2, "Reputational Influence")
-m1_p3 <- plotCoPv_m1(m1_co3, m1_pco3, "Government Influence")
+# M1 without the deviance test p-value
+p1 <- plotCoPv_m1(co1, cop1, "Reputational Influence")
+p2 <- plotCoPv_m1(co2, cop2, "Government Influence")
+p3 <- plotCoPv_m1(co3, cop3, "GWI Degree")
+p4 <- plotCoPv_m1(co4, cop4, "Popularity Effect")
 # Model 2 
-m2_p13 <- plotCoPv(m2_co13, pvA_m2, m2_pco13, "Reputational Boosting Influence")
+p5 <- plotCoPv(co5, p_m2, cop5, "Reputational Boosting Influence")
 # Model 3 
-m3_p14 <- plotCoPv(m3_co14, pvA_m3, m3_pco14, "Government Boosting Influence")
+p6 <- plotCoPv(co6, p_m3, cop6, "Government Boosting Influence")
 
-#Fix labels
-labelsm <- c("Jan-18", "July-18",
-             "Jan-19", "July-19",
-             "Jan-20", "July-20",
-             "Jan-21", "July-21")
-
+######
+## Save plots as pdf
 # Save Influence -plot
-pdf("output/pdf/m1_influence.pdf", width = 7, height =7)
-m1_p2 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
+pdf("output/pdf/inf.pdf", width = 7, height =7)
+p1
 dev.off()
 # Save government -plot
-pdf("output/pdf/m1_government.pdf", width = 7, height =7)
-m1_p3 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
+pdf("output/pdf/gov.pdf", width = 7, height =7)
+p2 
 dev.off()
 # Save influence + government in the same figure
-pdf("output/pdf/m1_inf_gov_2605.pdf", width = 14, height = 7)
-p2 <- m1_p2 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-p3 <- m1_p3 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-plots_ALL <- grid.arrange(p2, p3,
+pdf("output/pdf/inf_gov.pdf", width = 14, height = 7)
+plots_ALL <- grid.arrange(p1, p2,
                           ncol=2,
                           layout_matrix = rbind(c(1, 2)))
 dev.off()
-# Save popularity + inf indeg + gov indeg -plot
-pdf("output/pdf/inf.indeg_gov.indeg_2605.pdf", width = 14, height = 7)
-#plot.new()
-#p12 <- m2_p12 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-p13 <- m2_p13 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-p14 <- m3_p14 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-plots_ALL <- grid.arrange(p13, p14,
+# Save inf indeg + gov indeg -plot
+pdf("output/pdf/inf_gov_indeg.pdf", width = 14, height = 7)
+plots_ALL <- grid.arrange(p5, p6,
                           ncol=2,
                           layout_matrix = rbind(c(1, 2)))
-#plots_ALL <- grid.arrange(p12, p13, p14,
-#                          ncol=2,
-#                          layout_matrix = rbind(c(1, 2), 
- #                                               c(NA, 3)));
+dev.off()
+# Save GWI degree and popularity plots
+pdf("output/pdf/gwi_popularity.pdf", width = 14, height = 7)
+plots_ALL <- grid.arrange(p3, p4,
+                          ncol=2,
+                          layout_matrix = rbind(c(1, 2)))
+dev.off()
+
+rm(co1, co2, co3, co4, co5, co6, cop1, cop2, cop3, cop4, cop5, cop6, 
+   p_m1, p_m2, p_m3, p1, p2, p3, p4, p5, p6)
+#                                               ;
 #legend('bottomleft', legend = c('Anova-test and coefficient', 'Anova-test', 'Coefficient', 'None'), 
 #       border= c('black', 'black', 'black', 'black'),
 #       pch= c(21, 24, 13, 4), #'1' = 21, '2'=24, '3'=13, '4'=4)
 #       pt.bg= 'black', 
 #       bty = 'o', cex = 2, title = "Significant p-value")
-dev.off()
-
