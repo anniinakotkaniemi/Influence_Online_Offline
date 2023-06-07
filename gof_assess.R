@@ -64,13 +64,28 @@ assessIndeg <- function(models, networks, nsim, seed= 310523){
 indeg <- assessIndeg(m1, nwlist, 100)
 
 # Plot indeg gof to fit to two pages
-# Does not work!
-pdf("output/pdf/indeg.pdf", width = 8, height = 11)
-for (i in 1:length(indeg)) {
-  par(mar = c(2, 2, 2, 2), mfrow=c(6,4))
-  plot(indeg[[(i)]], main = paste("Period", i))
+# Setting headers does not work
+# First page
+pdf("output/pdf/indeg1.pdf", width = 8, height = 11)
+par(mar = c(2, 2, 0.5, 0.2), mfrow=c(6,4))
+for (i in 1:24) {
+  plot(indeg[[(i)]], main=NA
+     #  , main = paste("Period", i)
+       )
+ # mtext(paste("Period", i), side = 3, line = -1, outer = TRUE, cex = 1.5)
 }
 dev.off()
+# Second page
+pdf("output/pdf/indeg2.pdf", width = 8, height = 11)
+par(mar = c(2, 2, 0.5, 0.2), mfrow=c(6,4))
+for (i in 25:47) {
+  plot(indeg[[(i)]], main=NA
+       #  , main = paste("Period", i)
+  )
+  # mtext(paste("Period", i), side = 3, line = -1, outer = TRUE, cex = 1.5)
+}
+dev.off()
+
 
 #################
 ### AIC and BIC Plotting
@@ -89,12 +104,12 @@ colnames(AICdata) <- c("Month", "Model 1", "Model 0")
 AICmelt <- reshape2::melt(AICdata, id.var='Month')
 colnames(AICmelt) <- c("Month", "variable", "AIC")
 
-p1<- ggplot(data = AICmelt, aes(x = Month, y = AIC, col=variable)) +ggtitle('AIC')+theme_bw() +
+p7<- ggplot(data = AICmelt, aes(x = Month, y = AIC, col=variable)) +ggtitle('AIC')+theme_bw() +
   scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
   geom_line(lwd=1, aes(linetype=variable))+ scale_color_manual(values = c("Model 1" = "#EE6677", "Model 0" = "#4477AA")) 
-p1<-p1+theme(legend.position='none', axis.text=element_text(size=16),axis.title=element_text(size=19),
+p7<-p7+theme(legend.position='none', axis.text=element_text(size=16),axis.title=element_text(size=19),
              plot.title=element_text(size=21, face='bold'))
-p1
+p7
 ## BIC Plotting
 BICdata <- cbind(c(2:48), bic_m1, bic_m0)
 BICdata <- as.data.frame(BICdata)
@@ -102,21 +117,21 @@ colnames(BICdata) <- c("Month", "Model 1", "Model 0")
 BICmelt <- reshape2::melt(BICdata, id.var='Month')
 colnames(BICmelt) <- c("Month", "variable", "BIC")
 
-p2<- ggplot(data = BICmelt, aes(x = Month, y = BIC, col=variable)) +ggtitle('BIC')+theme_bw() +
+p8<- ggplot(data = BICmelt, aes(x = Month, y = BIC, col=variable)) +ggtitle('BIC')+theme_bw() +
   scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
   geom_line(lwd=1, aes(linetype=variable))+ scale_color_manual(values = c("Model 1" = "#EE6677", "Model 0" = "#4477AA")) 
-p2<-p2+theme(axis.title=element_text(size=19),axis.text=element_text(size=16), 
+p8<-p8+theme(axis.title=element_text(size=19),axis.text=element_text(size=16), 
              plot.title=element_text(size=21, face='bold'), legend.title=element_blank(),
              legend.position = c(0.85, 0.90), legend.text=element_text(size=14))
-p2
+p8
 
 ## Save as pdf
 pdf("output/pdf/aicbic.pdf", width = 14, height = 7)
-p1 <- p1 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-p2 <- p2 + scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm)
-plots_ALL <- grid.arrange(p1, p2,
+p7 
+p8 
+plots_ALL <- grid.arrange(p7, p8,
                           ncol=2,
                           layout_matrix = rbind(c(1, 2)))
 dev.off()
 
-rm(aic_m1, aic_m0, AICmelt, AICdata, bic_m1, bic_m0, BICmelt, BICdata, p1, p2)
+rm(aic_m1, aic_m0, AICmelt, AICdata, bic_m1, bic_m0, BICmelt, BICdata, p7, p8)
