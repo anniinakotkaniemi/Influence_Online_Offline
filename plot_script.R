@@ -171,13 +171,14 @@ plots_ALL <- grid.arrange(p5, p6,
 dev.off()
 # Save GWI degree and popularity plots
 pdf("output/pdf/gwi_popularity.pdf", width = 14, height = 7)
-plots_ALL <- grid.arrange(p3, p4,
+plots_ALL <- grid.arrange(p4, p3,
                           ncol=2,
                           layout_matrix = rbind(c(1, 2)))
 dev.off()
 
 rm(co1, co2, co3, co4, co5, co6, cop1, cop2, cop3, cop4, cop5, cop6, 
    p_m1, p_m2, p_m3, p1, p2, p3, p4, p5, p6)
+#save.image("~/FI Workspace Objects 0706.RData")
 #                                               ;
 #legend('bottomleft', legend = c('Anova-test and coefficient', 'Anova-test', 'Coefficient', 'None'), 
 #       border= c('black', 'black', 'black', 'black'),
