@@ -1,0 +1,7 @@
+data/*
+!data/README.txt
+*.RData
+config.ini
+*.pdf
+*.pickle
+*.txt
