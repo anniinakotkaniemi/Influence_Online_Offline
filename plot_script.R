@@ -80,10 +80,10 @@ p_m3 <- makePvAnova(m1, m3) # change m1 -> m3
 
 ###### Plotting ##### 
 # Fix labels
-labelsm <- c("Jan 18", "Jul 18",
-             "Jan 19", "Jul 19",
-             "Jan 20", "Jul 20",
-             "Jan 21", "Jul 21")
+labelsm <- c("Jan '18", "Jul '18",
+             "Jan '19", "Jul '19",
+             "Jan '20", "Jul '20",
+             "Jan '21", "Jul '21")
 # Function to plot coefficients and p-values without ANOVA test
 plotCoPv_m1 <- function(coefficient, pv_plot, coefname_modelnr){
   df <- data.frame(c(2:48), coefficient, pv_plot)
@@ -97,6 +97,7 @@ plotCoPv_m1 <- function(coefficient, pv_plot, coefname_modelnr){
     scale_fill_manual(values=c('1'='#0072B2', '2'='#F05039'))+
     scale_color_manual(values=c('1'='black', '2'='black'))+
     scale_shape_manual(values=c('1' = 21, '2'=4))+
+    labs(x = "") +
     theme(legend.position = "none",
           plot.title=element_text(size=20),
           axis.title.x=element_text(vjust=0,  
@@ -127,6 +128,7 @@ plotCoPv <- function(coefficient, pvalue_anova, pvalue_co, coefname_modelnr){
     scale_fill_manual(values=c('1'='#0072B2', '2'='#0072B2', '3'='#F05039', '4'='#F05039'))+
     scale_color_manual(values=c('1'='black', '2'='black', '3'='black', '4'='black'))+
     scale_shape_manual(values=c('1' = 21, '2'=24, '3'=4, '4'=4)  )+
+    labs(x = "") +
     theme(legend.position = "none",
           plot.title=element_text(size=20),
           axis.title.x=element_text(vjust=0,  
@@ -139,13 +141,13 @@ plotCoPv <- function(coefficient, pvalue_anova, pvalue_co, coefname_modelnr){
 
 # M1 without the deviance test p-value
 p1 <- plotCoPv_m1(co1, cop1, "Reputational Influence")
-p2 <- plotCoPv_m1(co2, cop2, "Government Influence")
-p3 <- plotCoPv_m1(co3, cop3, "GWI Degree")
+p2 <- plotCoPv_m1(co2, cop2, "Formal-institutional Influence")
+p3 <- plotCoPv_m1(co3, cop3, "gwidegree")
 p4 <- plotCoPv_m1(co4, cop4, "Popularity Effect")
 # Model 2 
 p5 <- plotCoPv(co5, p_m2, cop5, "Reputational Boosting Influence")
 # Model 3 
-p6 <- plotCoPv(co6, p_m3, cop6, "Government Boosting Influence")
+p6 <- plotCoPv(co6, p_m3, cop6, "Formal-institutional Boosting Influence")
 
 ######
 ## Save plots as pdf
