@@ -105,7 +105,7 @@ AICmelt <- reshape2::melt(AICdata, id.var='Month')
 colnames(AICmelt) <- c("Month", "variable", "AIC")
 
 p7<- ggplot(data = AICmelt, aes(x = Month, y = AIC, col=variable)) +ggtitle('AIC')+theme_bw() +
-  scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
+  scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) + labs(x = "") +
   geom_line(lwd=1, aes(linetype=variable))+ scale_color_manual(values = c("Model 1" = "#EE6677", "Model 0" = "#4477AA")) 
 p7<-p7+theme(legend.position='none', axis.text=element_text(size=16),axis.title=element_text(size=19),
              plot.title=element_text(size=21, face='bold'))
@@ -118,7 +118,7 @@ BICmelt <- reshape2::melt(BICdata, id.var='Month')
 colnames(BICmelt) <- c("Month", "variable", "BIC")
 
 p8<- ggplot(data = BICmelt, aes(x = Month, y = BIC, col=variable)) +ggtitle('BIC')+theme_bw() +
-  scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) +
+  scale_x_continuous(breaks=seq(1, 48, 6), labels = labelsm) + labs(x = "") +
   geom_line(lwd=1, aes(linetype=variable))+ scale_color_manual(values = c("Model 1" = "#EE6677", "Model 0" = "#4477AA")) 
 p8<-p8+theme(axis.title=element_text(size=19),axis.text=element_text(size=16), 
              plot.title=element_text(size=21, face='bold'), legend.title=element_blank(),
@@ -127,8 +127,6 @@ p8
 
 ## Save as pdf
 pdf("output/pdf/aicbic.pdf", width = 14, height = 7)
-p7 
-p8 
 plots_ALL <- grid.arrange(p7, p8,
                           ncol=2,
                           layout_matrix = rbind(c(1, 2)))
